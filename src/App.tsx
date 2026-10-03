@@ -6,10 +6,7 @@ import { DEFAULT_SETTINGS } from './settings'
 import type { Settings } from './settings'
 import Greeting from './components/Greeting'
 import HeroClock from './components/HeroClock'
-import FocusIntention from './components/FocusIntention'
 import SettingsPanel from './components/SettingsPanel'
-import PomodoroTimer from './components/PomodoroTimer'
-import TodoList from './components/TodoList'
 import AmbientSound from './components/AmbientSound'
 import KioskLayer from './components/KioskLayer'
 
@@ -77,23 +74,6 @@ function App() {
       <main className="app-main">
         <Greeting name={settings.name} />
         <HeroClock use24h={settings.use24h} />
-        <FocusIntention />
-
-        <div className="region-grid">
-          <section className="region region--timer" aria-label="Fokus-Timer">
-            <span className="region-label">Fokus-Timer</span>
-            <PomodoroTimer
-              workMinutes={settings.pomodoroWorkMinutes}
-              shortBreakMinutes={settings.pomodoroShortBreakMinutes}
-              longBreakMinutes={settings.pomodoroLongBreakMinutes}
-            />
-          </section>
-
-          <section className="region region--todo" aria-label="Aufgaben">
-            <span className="region-label">Aufgaben</span>
-            <TodoList />
-          </section>
-        </div>
       </main>
 
       <footer className="app-footer">

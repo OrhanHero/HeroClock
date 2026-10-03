@@ -102,7 +102,7 @@ button {
 }
 
 .hero-clock__time {
-  font-size: clamp(3.5rem, 16vw, 8.5rem);
+  font-size: clamp(5rem, 24vw, 14rem);
   font-weight: 700;
   letter-spacing: 0.01em;
   line-height: 1;
@@ -111,7 +111,7 @@ button {
 }
 
 .hero-clock__date {
-  font-size: clamp(1rem, 3vw, 1.4rem);
+  font-size: clamp(1.2rem, 4vw, 2rem);
   color: var(--text-muted);
   text-transform: capitalize;
 }
@@ -121,58 +121,6 @@ button {
   font-size: clamp(1.4rem, 4.5vw, 2.4rem);
   font-weight: 600;
   color: var(--text);
-}
-
-/* Fokus-Absicht */
-.focus-intention {
-  width: 100%;
-  max-width: 40rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.6rem;
-}
-
-.focus-intention__label {
-  font-size: 0.78rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-}
-
-.focus-intention__value {
-  width: 100%;
-  border: 1px dashed transparent;
-  border-radius: 14px;
-  background: transparent;
-  padding: 0.6rem 1rem;
-  font-size: clamp(1.05rem, 3vw, 1.5rem);
-  font-weight: 500;
-  color: var(--text);
-  text-align: center;
-  transition: border-color 0.2s ease, background-color 0.2s ease;
-}
-
-.focus-intention__value:hover {
-  border-color: var(--border);
-  background: var(--surface);
-}
-
-.focus-intention__value--empty {
-  color: var(--text-muted);
-  font-weight: 400;
-  font-style: italic;
-}
-
-.focus-intention__input {
-  width: 100%;
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  background: var(--surface-strong);
-  padding: 0.6rem 1rem;
-  font-size: clamp(1.05rem, 3vw, 1.5rem);
-  color: var(--text);
-  text-align: center;
 }
 
 .settings-button {
@@ -204,56 +152,6 @@ button {
   gap: clamp(1rem, 2.5vw, 1.75rem);
   padding-block: clamp(1.5rem, 5vh, 3.5rem);
   text-align: center;
-}
-
-/* Platzhalter-Regionen fuer spaetere Features */
-.region {
-  width: 100%;
-  padding: clamp(1rem, 2.5vw, 1.75rem);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  background: var(--surface);
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(12px);
-}
-
-.region-label {
-  display: block;
-  font-size: 0.72rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  margin-bottom: 0.4rem;
-}
-
-.region-placeholder {
-  color: var(--text-muted);
-  font-size: 0.95rem;
-}
-
-.region--clock .region-placeholder {
-  font-size: clamp(2.5rem, 11vw, 5rem);
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  color: var(--text);
-}
-
-.region--greeting .region-placeholder {
-  font-size: clamp(1.1rem, 3vw, 1.6rem);
-  color: var(--text);
-}
-
-.region-grid {
-  width: 100%;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: clamp(1rem, 2.5vw, 1.5rem);
-}
-
-@media (min-width: 44rem) {
-  .region-grid {
-    grid-template-columns: 1fr 1fr;
-  }
 }
 
 .app-footer {
@@ -418,7 +316,7 @@ button {
   color: var(--surface-strong);
 }
 
-/* Pomodoro-Dauern im Einstellungs-Panel */
+/* Zahlenfelder-Raster im Einstellungs-Panel (z. B. Nachtmodus-Zeiten) */
 .settings-durations {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -434,178 +332,6 @@ button {
 .settings-duration .settings-field__input {
   padding: 0.45rem 0.5rem;
   text-align: center;
-}
-
-/* Pomodoro-Timer */
-.pomodoro {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.6rem;
-}
-
-.pomodoro__phase {
-  font-size: 0.78rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  padding: 0.25rem 0.9rem;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  color: var(--text-muted);
-  background: var(--surface);
-}
-
-.pomodoro__phase[data-phase='work'] {
-  color: var(--accent);
-  border-color: var(--accent);
-}
-
-.pomodoro__phase[data-phase='shortBreak'],
-.pomodoro__phase[data-phase='longBreak'] {
-  color: var(--accent-2);
-  border-color: var(--accent-2);
-}
-
-.pomodoro__time {
-  font-size: clamp(2.75rem, 12vw, 4.5rem);
-  font-weight: 700;
-  line-height: 1;
-  color: var(--text);
-  font-variant-numeric: tabular-nums;
-}
-
-.pomodoro__cycle {
-  font-size: 0.82rem;
-  color: var(--text-muted);
-}
-
-.pomodoro__controls {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.5rem;
-}
-
-.pomodoro__button {
-  padding: 0.5rem 1.1rem;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: var(--surface);
-  color: var(--text);
-  font-size: 0.9rem;
-  transition: transform 0.15s ease, background-color 0.2s ease;
-}
-
-.pomodoro__button:hover {
-  transform: translateY(-1px);
-  background: var(--surface-strong);
-}
-
-.pomodoro__button--primary {
-  background: var(--accent);
-  color: var(--surface-strong);
-  border-color: transparent;
-}
-
-/* Aufgabenliste */
-.todo {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  text-align: left;
-}
-
-.todo__form {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-
-.todo__input {
-  flex: 1 1 10rem;
-  min-width: 0;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: var(--surface-strong);
-  padding: 0.55rem 0.9rem;
-  font-size: 0.95rem;
-  color: var(--text);
-}
-
-.todo__add {
-  padding: 0.55rem 1rem;
-  border: 1px solid transparent;
-  border-radius: 12px;
-  background: var(--accent);
-  color: var(--surface-strong);
-  font-size: 0.9rem;
-  white-space: nowrap;
-}
-
-.todo__empty {
-  color: var(--text-muted);
-  font-size: 0.9rem;
-}
-
-.todo__list {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-
-.todo__item {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  padding: 0.5rem 0.6rem;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: var(--surface);
-}
-
-.todo__label {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  flex: 1;
-  cursor: pointer;
-}
-
-.todo__checkbox {
-  width: 1.1rem;
-  height: 1.1rem;
-  accent-color: var(--accent);
-  flex-shrink: 0;
-}
-
-.todo__text {
-  color: var(--text);
-  word-break: break-word;
-}
-
-.todo__item--done .todo__text {
-  text-decoration: line-through;
-  color: var(--text-muted);
-}
-
-.todo__delete {
-  border: none;
-  background: transparent;
-  color: var(--text-muted);
-  font-size: 1.3rem;
-  line-height: 1;
-  padding: 0 0.3rem;
-  transition: color 0.2s ease;
-}
-
-.todo__delete:hover {
-  color: var(--accent-2);
-}
-
-.todo__count {
-  font-size: 0.82rem;
-  color: var(--text-muted);
 }
 
 /* Umgebungsgeraeusch-Steuerung */
@@ -684,7 +410,6 @@ button {
   filter: brightness(0.55);
 }
 
-[data-dimmed='true'] .region,
 [data-dimmed='true'] .settings-button,
 [data-dimmed='true'] .theme-switch {
   background: rgba(0, 0, 0, 0.6);
