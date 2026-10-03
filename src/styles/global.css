@@ -1,0 +1,189 @@
+/*
+ * HeroClock Global Styles
+ * Reset, Typografie und Layout-Grundlagen fuer die Dashboard-Huelle.
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  color: var(--text);
+  background-color: var(--bg);
+  background-image: var(--bg-image);
+  background-attachment: fixed;
+  background-size: cover;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+h1,
+h2,
+h3 {
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* App-Huelle: zentriertes, responsives Layout */
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: clamp(1.25rem, 3vw, 2.5rem);
+}
+
+.app-topbar {
+  width: 100%;
+  max-width: 72rem;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.settings-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  backdrop-filter: blur(10px);
+  transition: transform 0.15s ease, background-color 0.2s ease;
+}
+
+.settings-button:hover {
+  transform: translateY(-1px);
+  background: var(--surface-strong);
+}
+
+.app-main {
+  flex: 1;
+  width: 100%;
+  max-width: 56rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1rem, 2.5vw, 1.75rem);
+  padding-block: clamp(1.5rem, 5vh, 3.5rem);
+  text-align: center;
+}
+
+/* Platzhalter-Regionen fuer spaetere Features */
+.region {
+  width: 100%;
+  padding: clamp(1rem, 2.5vw, 1.75rem);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(12px);
+}
+
+.region-label {
+  display: block;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.4rem;
+}
+
+.region-placeholder {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.region--clock .region-placeholder {
+  font-size: clamp(2.5rem, 11vw, 5rem);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--text);
+}
+
+.region--greeting .region-placeholder {
+  font-size: clamp(1.1rem, 3vw, 1.6rem);
+  color: var(--text);
+}
+
+.region-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(1rem, 2.5vw, 1.5rem);
+}
+
+@media (min-width: 44rem) {
+  .region-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.app-footer {
+  width: 100%;
+  max-width: 72rem;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  padding-top: 1.5rem;
+}
+
+/* Einfacher Theme-Umschalter in der Topbar (Platzhalter bis zum Settings-Panel) */
+.theme-switch {
+  display: inline-flex;
+  gap: 0.35rem;
+  padding: 0.3rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  backdrop-filter: blur(10px);
+}
+
+.theme-switch button {
+  padding: 0.35rem 0.75rem;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.theme-switch button[aria-pressed='true'] {
+  background: var(--accent);
+  color: var(--surface-strong);
+}

@@ -1,0 +1,48 @@
+/*
+ * HeroClock Themes
+ * Eigenstaendige Farbpaletten, ueber ein data-theme-Attribut auf <html> gesteuert.
+ * Jedes Theme definiert dieselben CSS-Variablen, damit Komponenten themenunabhaengig bleiben.
+ */
+
+:root,
+[data-theme='daybreak'] {
+  /* Daybreak - helles, warmes Tageslicht-Theme */
+  --bg: #f4f1ea;
+  --bg-image: radial-gradient(circle at 20% 15%, #fef7ec 0%, #f4f1ea 55%, #ece6da 100%);
+  --surface: rgba(255, 255, 255, 0.72);
+  --surface-strong: #ffffff;
+  --border: rgba(60, 50, 40, 0.12);
+  --text: #2c2621;
+  --text-muted: #7a6f63;
+  --accent: #d9743b;
+  --accent-2: #3f8f7d;
+  --shadow: 0 18px 48px rgba(60, 40, 20, 0.14);
+}
+
+[data-theme='midnight'] {
+  /* Midnight - ruhiges, dunkles Nacht-Theme */
+  --bg: #0e1117;
+  --bg-image: radial-gradient(circle at 80% 10%, #1a2130 0%, #0e1117 60%, #080a0f 100%);
+  --surface: rgba(28, 34, 46, 0.68);
+  --surface-strong: #1b212c;
+  --border: rgba(255, 255, 255, 0.08);
+  --text: #e7ecf3;
+  --text-muted: #93a0b4;
+  --accent: #6ea8fe;
+  --accent-2: #7ee0c0;
+  --shadow: 0 20px 56px rgba(0, 0, 0, 0.45);
+}
+
+[data-theme='aurora'] {
+  /* Aurora - lebendiger Farbverlauf im Hintergrund */
+  --bg: #141229;
+  --bg-image: linear-gradient(135deg, #3a1c71 0%, #5b2a86 32%, #8f3e9e 58%, #d76d77 82%, #ffaf7b 100%);
+  --surface: rgba(20, 16, 40, 0.42);
+  --surface-strong: rgba(20, 16, 40, 0.68);
+  --border: rgba(255, 255, 255, 0.18);
+  --text: #fdf6ff;
+  --text-muted: #d7c7e8;
+  --accent: #ffd36e;
+  --accent-2: #74f0d0;
+  --shadow: 0 24px 64px rgba(30, 10, 50, 0.5);
+}
