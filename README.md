@@ -27,8 +27,18 @@ verwendet.
   Rauschen mit Lautstaerke-Regler. Es werden keine externen Audiodateien
   geladen; der Klang entsteht vollstaendig im Browser.
 - **Drei eigenstaendige Themes** (siehe unten), lokal gespeichert.
-- **Einstellungen** fuer Name, Uhrzeit-Format, Theme, Pomodoro-Dauern und
-  Umgebungsgeraeusch - alle Werte werden im `localStorage` gesichert.
+- **Dauerbetrieb/Kiosk-Modus** fuer Touch-Displays (z. B. Amazon Echo Show):
+  - Zentrierte, an den Viewport angepasste Darstellung ohne Scrollbalken.
+  - Haelt den Bildschirm aktiv ueber die Screen-Wake-Lock-API und fordert die
+    Sperre nach einem Standby automatisch neu an. Fehlt die API (z. B.
+    blockiert), spielt im Hintergrund ein selbst erzeugtes, unsichtbares,
+    stummes 1x1-Video in Dauerschleife, um den Standby zu verhindern.
+  - Eine Beruehrung der Flaeche aktiviert den nativen Vollbildmodus.
+  - Nachtmodus mit tiefem Schwarz (`#000000`) als Burn-In-Schutz, zeitgesteuert
+    ueber ein konfigurierbares Nachtfenster.
+- **Einstellungen** fuer Name, Uhrzeit-Format, Theme, Pomodoro-Dauern,
+  Umgebungsgeraeusch und Nachtmodus - alle Werte werden im `localStorage`
+  gesichert.
 
 ## Technik
 

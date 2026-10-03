@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useLocalStorage } from './hooks/useLocalStorage'
 import { useAmbientSound } from './hooks/useAmbientSound'
+import { useNightDimming } from './hooks/useNightDimming'
 import { DEFAULT_SETTINGS } from './settings'
 import type { Settings } from './settings'
 import Greeting from './components/Greeting'
@@ -10,6 +11,7 @@ import SettingsPanel from './components/SettingsPanel'
 import PomodoroTimer from './components/PomodoroTimer'
 import TodoList from './components/TodoList'
 import AmbientSound from './components/AmbientSound'
+import KioskLayer from './components/KioskLayer'
 
 function App() {
   // Alle Nutzereinstellungen liegen als ein Objekt unter 'heroclock:settings'.
@@ -31,6 +33,13 @@ function App() {
   // Umgebungsgeraeusch dauerhaft steuern - unabhaengig vom Einstellungs-Panel.
   useAmbientSound(settings.ambientEnabled, settings.ambientVolume)
 
+  // Nachtmodus/Dimming fuer den Dauerbetrieb (Burn-In-Schutz).
+  useNightDimming(
+    settings.nightDimming,
+    settings.nightStartHour,
+    settings.nightEndHour,
+  )
+
   const updateSettings = useCallback(
     (patch: Partial<Settings>) => {
       setStoredSettings((previous) => ({
@@ -44,6 +53,13 @@ function App() {
 
   return (
     <div className="app-shell">
+      {/*
+        Kiosk-Schicht fuer den Dauerbetrieb (Echo Show 11): haelt den Bildschirm
+        aktiv (Wake Lock + Video-Fallback) und loest bei Beruehrung den Vollbild-
+        modus aus.
+      */}
+      <KioskLayer />
+
       <header className="app-topbar">
         <button
           type="button"

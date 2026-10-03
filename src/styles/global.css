@@ -22,6 +22,24 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
+/*
+ * Dauerbetrieb/Kiosk (z. B. Echo Show 11, 1920x1200, 16:10):
+ * Niemals Scrollbalken erzeugen und die volle Viewport-Hoehe nutzen.
+ * dvh beruecksichtigt dynamische Browser-Leisten, mit vh als Fallback.
+ */
+html,
+body {
+  width: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+body,
+#root {
+  height: 100vh;
+  height: 100dvh;
+}
+
 body {
   font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
   color: var(--text);
@@ -54,13 +72,16 @@ button {
   border-radius: 6px;
 }
 
-/* App-Huelle: zentriertes, responsives Layout */
+/* App-Huelle: zentriertes, responsives Layout, fuellt den Viewport */
 .app-shell {
-  min-height: 100vh;
+  position: relative;
+  height: 100vh;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: clamp(1.25rem, 3vw, 2.5rem);
+  overflow: hidden;
 }
 
 .app-topbar {
@@ -588,4 +609,70 @@ button {
 .ambient__volume input[type='range'] {
   width: 100%;
   accent-color: var(--accent);
+}
+
+/*
+ * Kiosk-/Dauerbetrieb-Hilfen (Echo Show 11 im Vollbild).
+ */
+
+/* Unsichtbarer, ganzflaechiger Klick-/Touch-Layer fuer den Vollbild-Trigger.
+   Liegt hinter den eigentlichen Bedienelementen (niedriger z-index). */
+.kiosk-fullscreen-layer {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  z-index: 0;
+}
+
+.kiosk-fullscreen-layer:focus-visible {
+  outline: none;
+}
+
+/* Interaktive Inhalte ueber den Klick-Layer heben, damit sie klickbar bleiben. */
+.app-topbar,
+.app-main,
+.app-footer,
+.settings-overlay {
+  position: relative;
+  z-index: 1;
+}
+
+/* Selbst erzeugtes 1x1-Fallback-Video: faktisch unsichtbar, aber vorhanden. */
+.kiosk-fallback-video {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+  border: 0;
+  z-index: -1;
+}
+
+/*
+ * Nachtmodus/Dimming (Burn-In-Schutz): tiefes Schwarz #000000 und gedaempfte
+ * Inhalte, wenn das <html>-Element data-dimmed="true" traegt.
+ */
+[data-dimmed='true'] body {
+  background-color: #000000;
+  background-image: none;
+}
+
+[data-dimmed='true'] .app-shell {
+  filter: brightness(0.55);
+}
+
+[data-dimmed='true'] .region,
+[data-dimmed='true'] .settings-button,
+[data-dimmed='true'] .theme-switch {
+  background: rgba(0, 0, 0, 0.6);
+  box-shadow: none;
+  backdrop-filter: none;
 }

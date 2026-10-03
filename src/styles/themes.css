@@ -33,6 +33,18 @@
   --shadow: 0 20px 56px rgba(0, 0, 0, 0.45);
 }
 
+/*
+ * Nachtmodus/Dimming: tiefes Schwarz fuer OLED/LCD-Schonung im Dauerbetrieb.
+ * Ueberschreibt die Hintergrundvariablen jedes Themes, wenn data-dimmed aktiv ist.
+ */
+[data-dimmed='true'] {
+  --bg: #000000;
+  --bg-image: none;
+  --surface: rgba(255, 255, 255, 0.04);
+  --surface-strong: #0a0a0a;
+  --shadow: none;
+}
+
 [data-theme='aurora'] {
   /* Aurora - lebendiger Farbverlauf im Hintergrund */
   --bg: #141229;

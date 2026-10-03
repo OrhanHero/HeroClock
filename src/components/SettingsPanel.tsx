@@ -33,6 +33,15 @@ function clampMinutes(raw: string): number {
   return Math.min(180, Math.max(1, Math.round(value)))
 }
 
+/** Begrenzt eine Stunden-Eingabe auf 0-23. */
+function clampHour(raw: string): number {
+  const value = Number(raw)
+  if (Number.isNaN(value)) {
+    return 0
+  }
+  return Math.min(23, Math.max(0, Math.round(value)))
+}
+
 function SettingsPanel({
   open,
   settings,
@@ -190,6 +199,66 @@ function SettingsPanel({
           <section className="settings-field">
             <span className="settings-field__label">Umgebungsgeraeusch</span>
             {ambientControl}
+          </section>
+
+          <section className="settings-field">
+            <span className="settings-field__label">
+              Nachtmodus (Burn-In-Schutz)
+            </span>
+            <div
+              className="settings-segmented"
+              role="group"
+              aria-label="Nachtmodus waehlen"
+            >
+              <button
+                type="button"
+                aria-pressed={settings.nightDimming}
+                onClick={() => onChange({ nightDimming: true })}
+              >
+                An
+              </button>
+              <button
+                type="button"
+                aria-pressed={!settings.nightDimming}
+                onClick={() => onChange({ nightDimming: false })}
+              >
+                Aus
+              </button>
+            </div>
+            <p className="settings-field__hint">
+              Dimmt das Display nachts mit tiefem Schwarz, um das Panel im
+              Dauerbetrieb zu schonen.
+            </p>
+            <div className="settings-durations">
+              <label className="settings-duration">
+                <span className="settings-field__hint">Beginn (Uhr)</span>
+                <input
+                  type="number"
+                  min={0}
+                  max={23}
+                  className="settings-field__input"
+                  value={settings.nightStartHour}
+                  disabled={!settings.nightDimming}
+                  onChange={(event) =>
+                    onChange({ nightStartHour: clampHour(event.target.value) })
+                  }
+                />
+              </label>
+              <label className="settings-duration">
+                <span className="settings-field__hint">Ende (Uhr)</span>
+                <input
+                  type="number"
+                  min={0}
+                  max={23}
+                  className="settings-field__input"
+                  value={settings.nightEndHour}
+                  disabled={!settings.nightDimming}
+                  onChange={(event) =>
+                    onChange({ nightEndHour: clampHour(event.target.value) })
+                  }
+                />
+              </label>
+            </div>
           </section>
         </div>
       </aside>

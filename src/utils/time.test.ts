@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatMmSs, formatTime, greetingForHour } from './time'
+import { formatMmSs, formatTime, greetingForHour, isNightHour } from './time'
 
 describe('greetingForHour', () => {
   it('liefert "Guten Morgen" am Rand von 5 bis 10 Uhr', () => {
@@ -55,5 +55,29 @@ describe('formatMmSs', () => {
 
   it('erlaubt Minuten ueber 59', () => {
     expect(formatMmSs(5400)).toBe('90:00')
+  })
+})
+
+describe('isNightHour', () => {
+  it('erkennt ein Fenster ueber Mitternacht (22 bis 7 Uhr)', () => {
+    expect(isNightHour(22, 22, 7)).toBe(true)
+    expect(isNightHour(23, 22, 7)).toBe(true)
+    expect(isNightHour(0, 22, 7)).toBe(true)
+    expect(isNightHour(6, 22, 7)).toBe(true)
+    expect(isNightHour(7, 22, 7)).toBe(false)
+    expect(isNightHour(12, 22, 7)).toBe(false)
+    expect(isNightHour(21, 22, 7)).toBe(false)
+  })
+
+  it('erkennt ein Fenster innerhalb eines Tages (1 bis 5 Uhr)', () => {
+    expect(isNightHour(1, 1, 5)).toBe(true)
+    expect(isNightHour(4, 1, 5)).toBe(true)
+    expect(isNightHour(5, 1, 5)).toBe(false)
+    expect(isNightHour(0, 1, 5)).toBe(false)
+  })
+
+  it('ist bei gleichem Start und Ende immer false', () => {
+    expect(isNightHour(3, 6, 6)).toBe(false)
+    expect(isNightHour(6, 6, 6)).toBe(false)
   })
 })

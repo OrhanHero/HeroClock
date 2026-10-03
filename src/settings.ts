@@ -37,6 +37,15 @@ export interface Settings {
   ambientEnabled: boolean
   /** Lautstaerke des Umgebungsgeraeuschs (0 bis 1). */
   ambientVolume: number
+  /**
+   * Nachtmodus/Dimming aktiviert? Schont im Dauerbetrieb das Panel (Burn-In)
+   * durch tiefes Schwarz (#000000) und gedaempfte Inhalte im Nachtfenster.
+   */
+  nightDimming: boolean
+  /** Startstunde des Nachtfensters (0-23). */
+  nightStartHour: number
+  /** Endstunde des Nachtfensters (0-23), exklusiv. */
+  nightEndHour: number
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -48,4 +57,7 @@ export const DEFAULT_SETTINGS: Settings = {
   pomodoroLongBreakMinutes: 15,
   ambientEnabled: false,
   ambientVolume: 0.4,
+  nightDimming: true,
+  nightStartHour: 22,
+  nightEndHour: 7,
 }

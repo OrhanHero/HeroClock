@@ -53,6 +53,27 @@ export function greetingForHour(hour: number): string {
 }
 
 /**
+ * Prueft, ob eine Stunde in das Nachtfenster faellt (Burn-In-Schutz / Dimming).
+ *
+ * Das Fenster darf ueber Mitternacht reichen, z. B. von 22 bis 7 Uhr. In diesem
+ * Fall gilt die Nacht, wenn die Stunde >= Start ODER < Ende ist.
+ *
+ * @param hour  Stunde des Tages (0-23).
+ * @param start Startstunde des Nachtfensters (0-23).
+ * @param end   Endstunde des Nachtfensters (0-23), exklusiv.
+ */
+export function isNightHour(hour: number, start: number, end: number): boolean {
+  if (start === end) {
+    return false
+  }
+  if (start < end) {
+    return hour >= start && hour < end
+  }
+  // Fenster ueber Mitternacht, z. B. 22 bis 7.
+  return hour >= start || hour < end
+}
+
+/**
  * Formatiert eine Dauer in Sekunden als "mm:ss".
  *
  * Negative Werte werden auf 0 begrenzt, Minuten koennen bei langen Dauern
