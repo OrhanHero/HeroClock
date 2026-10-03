@@ -193,8 +193,16 @@ button {
 .settings-overlay {
   position: fixed;
   inset: 0;
+  /* Volle Viewport-Hoehe explizit erzwingen (Silk/Echo Show loest 100% am
+   * fixed-Overlay nicht immer zuverlaessig auf). vh zuerst als Fallback,
+   * dvh danach fuer Browser mit dynamischen Leisten. */
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
   display: flex;
+  /* Panel rechtsbuendig am Rand verankern und auf volle Hoehe strecken */
   justify-content: flex-end;
+  align-items: stretch;
   background: rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(2px);
   z-index: 50;
@@ -204,7 +212,11 @@ button {
   display: flex;
   flex-direction: column;
   width: min(24rem, 100%);
-  height: 100%;
+  /* Volle Viewport-Hoehe statt height:100% (Silk kollabierte das Panel sonst
+   * auf Inhaltshoehe und zeigte es mittig schwebend). */
+  height: 100vh;
+  height: 100dvh;
+  max-height: 100vh;
   max-height: 100dvh;
   overflow: hidden;
   background: var(--surface-strong);
