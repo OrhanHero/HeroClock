@@ -102,23 +102,29 @@ button {
 }
 
 .hero-clock__time {
-  font-size: clamp(5rem, 24vw, 14rem);
+  /* Querformat Echo Show 11 (1920 breit): bewusst sehr gross, damit die
+   * Uhrzeit das Display fuellt. Die vw-Komponente dominiert im Landscape;
+   * die Obergrenze faengt noch breitere Displays ab. nowrap + max-width
+   * verhindern Umbruch/Ueberlauf auch im 12h-Format ("10:17 AM"). */
+  font-size: clamp(6rem, 34vw, 24rem);
   font-weight: 700;
   letter-spacing: 0.01em;
   line-height: 1;
   color: var(--text);
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  max-width: 100%;
 }
 
 .hero-clock__date {
-  font-size: clamp(1.2rem, 4vw, 2rem);
+  font-size: clamp(1.4rem, 5vw, 2.6rem);
   color: var(--text-muted);
   text-transform: capitalize;
 }
 
 /* Begruessung */
 .greeting__text {
-  font-size: clamp(1.4rem, 4.5vw, 2.4rem);
+  font-size: clamp(1.5rem, 5vw, 2.8rem);
   font-weight: 600;
   color: var(--text);
 }
@@ -144,7 +150,9 @@ button {
 .app-main {
   flex: 1;
   width: 100%;
-  max-width: 56rem;
+  /* Breiter Rahmen, damit die stark vergroesserte Uhrzeit im Querformat
+   * genug horizontalen Platz hat und nicht an der Begrenzung anstoesst. */
+  max-width: 80rem;
   display: flex;
   flex-direction: column;
   align-items: center;
