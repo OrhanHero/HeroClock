@@ -1,49 +1,50 @@
-import { useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useLocalStorage } from './hooks/useLocalStorage'
-
-/** Verfuegbare, eigenstaendige Themes von HeroClock. */
-const THEMES = [
-  { id: 'daybreak', label: 'Tagesanbruch' },
-  { id: 'midnight', label: 'Mitternacht' },
-  { id: 'aurora', label: 'Aurora' },
-] as const
-
-type ThemeId = (typeof THEMES)[number]['id']
-
-const DEFAULT_THEME: ThemeId = 'daybreak'
+import { DEFAULT_SETTINGS } from './settings'
+import type { Settings } from './settings'
+import Greeting from './components/Greeting'
+import HeroClock from './components/HeroClock'
+import FocusIntention from './components/FocusIntention'
+import SettingsPanel from './components/SettingsPanel'
 
 function App() {
-  const [theme, setTheme] = useLocalStorage<ThemeId>('theme', DEFAULT_THEME)
+  // Alle Nutzereinstellungen liegen als ein Objekt unter 'heroclock:settings'.
+  const [storedSettings, setStoredSettings] = useLocalStorage<Settings>(
+    'settings',
+    DEFAULT_SETTINGS,
+  )
+
+  // Fehlende Felder (z. B. aus aelteren Versionen) mit Standardwerten ergaenzen.
+  const settings: Settings = { ...DEFAULT_SETTINGS, ...storedSettings }
+
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false)
 
   // Aktives Theme ueber ein data-theme-Attribut am <html>-Element setzen.
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme)
-  }, [theme])
+    document.documentElement.setAttribute('data-theme', settings.theme)
+  }, [settings.theme])
+
+  const updateSettings = useCallback(
+    (patch: Partial<Settings>) => {
+      setStoredSettings((previous) => ({
+        ...DEFAULT_SETTINGS,
+        ...previous,
+        ...patch,
+      }))
+    },
+    [setStoredSettings],
+  )
 
   return (
     <div className="app-shell">
       <header className="app-topbar">
-        <div
-          className="theme-switch"
-          role="group"
-          aria-label="Theme auswaehlen"
-        >
-          {THEMES.map((option) => (
-            <button
-              key={option.id}
-              type="button"
-              aria-pressed={theme === option.id}
-              onClick={() => setTheme(option.id)}
-            >
-              {option.label}
-            </button>
-          ))}
-        </div>
         <button
           type="button"
           className="settings-button"
           aria-label="Einstellungen oeffnen"
+          aria-expanded={isSettingsOpen}
           title="Einstellungen"
+          onClick={() => setIsSettingsOpen(true)}
         >
           <span aria-hidden="true">&#9881;</span>
           <span>Einstellungen</span>
@@ -51,22 +52,9 @@ function App() {
       </header>
 
       <main className="app-main">
-        <section className="region region--greeting" aria-label="Begruessung">
-          <span className="region-label">Begruessung</span>
-          <p className="region-placeholder">Willkommen zurueck bei HeroClock.</p>
-        </section>
-
-        <section className="region region--clock" aria-label="Uhr">
-          <span className="region-label">Uhr</span>
-          <p className="region-placeholder">--:--</p>
-        </section>
-
-        <section className="region region--intention" aria-label="Fokus-Absicht">
-          <span className="region-label">Deine Absicht</span>
-          <p className="region-placeholder">
-            Worauf moechtest du dich heute konzentrieren?
-          </p>
-        </section>
+        <Greeting name={settings.name} />
+        <HeroClock use24h={settings.use24h} />
+        <FocusIntention />
 
         <div className="region-grid">
           <section className="region region--timer" aria-label="Fokus-Timer">
@@ -84,6 +72,13 @@ function App() {
       <footer className="app-footer">
         <p>HeroClock &middot; dein ruhiger Ort zum Fokussieren</p>
       </footer>
+
+      <SettingsPanel
+        open={isSettingsOpen}
+        settings={settings}
+        onChange={updateSettings}
+        onClose={() => setIsSettingsOpen(false)}
+      />
     </div>
   )
 }
