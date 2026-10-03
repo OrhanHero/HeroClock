@@ -1,8 +1,13 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useReducer, useRef } from 'react'
 import { formatMmSs } from '../utils/time'
-
-/** Mogliche Phasen eines Pomodoro-Zyklus. */
-type Phase = 'work' | 'shortBreak' | 'longBreak'
+import {
+  createInitialState,
+  PHASE_LABEL,
+  pomodoroReducer,
+  type PomodoroAction,
+  type PomodoroDurations,
+  type PomodoroState,
+} from '../utils/pomodoro'
 
 interface PomodoroTimerProps {
   /** Dauer einer Fokus-Phase in Minuten. */
@@ -12,16 +17,6 @@ interface PomodoroTimerProps {
   /** Dauer einer langen Pause in Minuten. */
   longBreakMinutes: number
 }
-
-/** Deutsche Beschriftung je Phase. */
-const PHASE_LABEL: Record<Phase, string> = {
-  work: 'Fokus',
-  shortBreak: 'Pause',
-  longBreak: 'Lange Pause',
-}
-
-/** Nach wie vielen Fokus-Phasen eine lange Pause folgt. */
-const CYCLES_BEFORE_LONG_BREAK = 4
 
 /**
  * Spielt einen kurzen, selbst erzeugten Klang ueber die WebAudio-API ab.
@@ -68,102 +63,88 @@ function playChime(ascending: boolean): void {
 /**
  * Pomodoro-Timer mit Fokus- und Pausen-Phasen.
  *
- * Der Tick laeuft ueber einen setInterval in useEffect und wird sauber
- * aufgeraeumt. Beim Phasenwechsel ertoent ein per WebAudio erzeugter Klang.
+ * Die gesamte Phasen- und Dauerlogik liegt im reinen `pomodoroReducer`
+ * (siehe utils/pomodoro.ts). Der Tick laeuft ueber einen setInterval in
+ * useEffect und wird sauber aufgeraeumt. Der Phasenwechsel wird genau einmal
+ * im Reducer berechnet; der WebAudio-Klang ertoent als Nebenwirkung in einem
+ * Effekt, der auf den Wechselzaehler reagiert - und daher auch unter
+ * React.StrictMode nur einmal pro Wechsel spielt.
  */
 function PomodoroTimer({
   workMinutes,
   shortBreakMinutes,
   longBreakMinutes,
 }: PomodoroTimerProps) {
-  const durationFor = useCallback(
-    (phase: Phase): number => {
-      switch (phase) {
-        case 'work':
-          return Math.max(1, Math.round(workMinutes)) * 60
-        case 'shortBreak':
-          return Math.max(1, Math.round(shortBreakMinutes)) * 60
-        case 'longBreak':
-          return Math.max(1, Math.round(longBreakMinutes)) * 60
-      }
-    },
-    [workMinutes, shortBreakMinutes, longBreakMinutes],
+  const durations: PomodoroDurations = {
+    workMinutes,
+    shortBreakMinutes,
+    longBreakMinutes,
+  }
+
+  // Dauer-Einstellungen in einem Ref spiegeln, damit der Reducer stets die
+  // aktuellen Werte sieht, ohne dass sich seine Identitaet aendern muss.
+  const durationsRef = useRef(durations)
+  durationsRef.current = durations
+
+  const reducer = useCallback(
+    (state: PomodoroState, action: PomodoroAction) =>
+      pomodoroReducer(state, action, durationsRef.current),
+    [],
   )
 
-  const [phase, setPhase] = useState<Phase>('work')
-  const [secondsLeft, setSecondsLeft] = useState(() => durationFor('work'))
-  const [isRunning, setIsRunning] = useState(false)
-  const [completedWorkSessions, setCompletedWorkSessions] = useState(0)
+  const [state, dispatch] = useReducer(
+    reducer,
+    durationsRef.current,
+    createInitialState,
+  )
+  const { phase, secondsLeft, isRunning, completedWorkSessions } = state
 
-  // Laufenden Zustand in einem Ref spiegeln, damit der Interval-Callback stabil bleibt.
-  const phaseRef = useRef(phase)
-  const completedRef = useRef(completedWorkSessions)
-  phaseRef.current = phase
-  completedRef.current = completedWorkSessions
-
-  // Wenn die Dauer-Einstellungen sich aendern und der Timer pausiert ist,
-  // die verbleibende Zeit der aktuellen Phase angleichen.
+  // Beim Aendern der Dauer-Einstellungen die verbleibende Zeit angleichen,
+  // solange der Timer pausiert ist.
   useEffect(() => {
-    if (!isRunning) {
-      setSecondsLeft(durationFor(phaseRef.current))
-    }
-  }, [durationFor, isRunning])
+    dispatch({ type: 'syncDurations' })
+  }, [workMinutes, shortBreakMinutes, longBreakMinutes])
 
-  // Bestimmt die naechste Phase und wechselt dorthin, inkl. Klang.
-  const advancePhase = useCallback(() => {
-    const current = phaseRef.current
-    let next: Phase
-    if (current === 'work') {
-      const completed = completedRef.current + 1
-      setCompletedWorkSessions(completed)
-      next =
-        completed % CYCLES_BEFORE_LONG_BREAK === 0 ? 'longBreak' : 'shortBreak'
-    } else {
-      next = 'work'
-    }
-    setPhase(next)
-    setSecondsLeft(durationFor(next))
-    playChime(next === 'work')
-  }, [durationFor])
-
-  // Sekunden-Tick ueber setInterval, nur solange der Timer laeuft.
+  // Sekunden-Tick ueber setInterval, nur solange der Timer laeuft. Der Tick
+  // dekrementiert bzw. loest beim Erreichen der Null den Phasenwechsel im
+  // Reducer aus - ohne hier selbst Nebenwirkungen auszufuehren.
   useEffect(() => {
     if (!isRunning) {
       return
     }
     const id = window.setInterval(() => {
-      setSecondsLeft((previous) => {
-        if (previous <= 1) {
-          advancePhase()
-          return durationFor(
-            phaseRef.current === 'work'
-              ? completedRef.current % CYCLES_BEFORE_LONG_BREAK === 0
-                ? 'longBreak'
-                : 'shortBreak'
-              : 'work',
-          )
-        }
-        return previous - 1
-      })
+      dispatch({ type: 'tick' })
     }, 1000)
     return () => {
       window.clearInterval(id)
     }
-  }, [isRunning, advancePhase, durationFor])
+  }, [isRunning])
+
+  // Klang als Nebenwirkung genau einmal pro Phasenwechsel. Der Effekt haengt
+  // am monotonen Wechselzaehler, daher spielt er auch unter StrictMode nicht
+  // doppelt und greift nicht in die State-Berechnung ein.
+  const lastTransitionRef = useRef(0)
+  useEffect(() => {
+    if (state.transitionCount === 0) {
+      return
+    }
+    if (state.transitionCount === lastTransitionRef.current) {
+      return
+    }
+    lastTransitionRef.current = state.transitionCount
+    playChime(state.lastTransitionToWork)
+  }, [state.transitionCount, state.lastTransitionToWork])
 
   const handleStartPause = () => {
-    setIsRunning((running) => !running)
+    dispatch({ type: 'toggleRunning' })
   }
 
   const handleReset = () => {
-    setIsRunning(false)
-    setPhase('work')
-    setCompletedWorkSessions(0)
-    setSecondsLeft(durationFor('work'))
+    dispatch({ type: 'reset' })
   }
 
   const handleSkip = () => {
-    advancePhase()
+    dispatch({ type: 'skip' })
   }
 
   return (
