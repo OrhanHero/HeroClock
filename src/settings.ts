@@ -27,10 +27,25 @@ export interface Settings {
   use24h: boolean
   /** Aktuell gewaehltes Theme. */
   theme: ThemeId
+  /** Dauer einer Fokus-Phase in Minuten. */
+  pomodoroWorkMinutes: number
+  /** Dauer einer kurzen Pause in Minuten. */
+  pomodoroShortBreakMinutes: number
+  /** Dauer einer langen Pause in Minuten. */
+  pomodoroLongBreakMinutes: number
+  /** Umgebungsgeraeusch aktiviert? */
+  ambientEnabled: boolean
+  /** Lautstaerke des Umgebungsgeraeuschs (0 bis 1). */
+  ambientVolume: number
 }
 
 export const DEFAULT_SETTINGS: Settings = {
   name: '',
   use24h: true,
   theme: DEFAULT_THEME,
+  pomodoroWorkMinutes: 25,
+  pomodoroShortBreakMinutes: 5,
+  pomodoroLongBreakMinutes: 15,
+  ambientEnabled: false,
+  ambientVolume: 0.4,
 }

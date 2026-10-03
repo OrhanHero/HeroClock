@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import type { ReactNode } from 'react'
 import type { Settings, ThemeId } from '../settings'
 import ThemeSwitcher from './ThemeSwitcher'
 
@@ -11,6 +12,8 @@ interface SettingsPanelProps {
   onChange: (patch: Partial<Settings>) => void
   /** Schliessen des Panels. */
   onClose: () => void
+  /** Steuerelemente fuer das Umgebungsgeraeusch (bleibt in App gemountet). */
+  ambientControl?: ReactNode
 }
 
 /**
@@ -21,7 +24,22 @@ interface SettingsPanelProps {
  * Pomodoro-Optionen) weitere Abschnitte ergaenzen koennen, indem sie das
  * Settings-Objekt erweitern und hier zusaetzliche Steuerelemente einfuegen.
  */
-function SettingsPanel({ open, settings, onChange, onClose }: SettingsPanelProps) {
+/** Begrenzt eine Minuten-Eingabe auf einen sinnvollen Bereich (1-180). */
+function clampMinutes(raw: string): number {
+  const value = Number(raw)
+  if (Number.isNaN(value)) {
+    return 1
+  }
+  return Math.min(180, Math.max(1, Math.round(value)))
+}
+
+function SettingsPanel({
+  open,
+  settings,
+  onChange,
+  onClose,
+  ambientControl,
+}: SettingsPanelProps) {
   const panelRef = useRef<HTMLDivElement>(null)
 
   // Schliessen per Escape-Taste, solange das Panel geoeffnet ist.
@@ -114,6 +132,64 @@ function SettingsPanel({ open, settings, onChange, onClose }: SettingsPanelProps
               theme={settings.theme}
               onChange={(theme: ThemeId) => onChange({ theme })}
             />
+          </section>
+
+          <section className="settings-field">
+            <span className="settings-field__label">Pomodoro-Dauern (Minuten)</span>
+            <div className="settings-durations">
+              <label className="settings-duration">
+                <span className="settings-field__hint">Fokus</span>
+                <input
+                  type="number"
+                  min={1}
+                  max={180}
+                  className="settings-field__input"
+                  value={settings.pomodoroWorkMinutes}
+                  onChange={(event) =>
+                    onChange({
+                      pomodoroWorkMinutes: clampMinutes(event.target.value),
+                    })
+                  }
+                />
+              </label>
+              <label className="settings-duration">
+                <span className="settings-field__hint">Kurze Pause</span>
+                <input
+                  type="number"
+                  min={1}
+                  max={180}
+                  className="settings-field__input"
+                  value={settings.pomodoroShortBreakMinutes}
+                  onChange={(event) =>
+                    onChange({
+                      pomodoroShortBreakMinutes: clampMinutes(
+                        event.target.value,
+                      ),
+                    })
+                  }
+                />
+              </label>
+              <label className="settings-duration">
+                <span className="settings-field__hint">Lange Pause</span>
+                <input
+                  type="number"
+                  min={1}
+                  max={180}
+                  className="settings-field__input"
+                  value={settings.pomodoroLongBreakMinutes}
+                  onChange={(event) =>
+                    onChange({
+                      pomodoroLongBreakMinutes: clampMinutes(event.target.value),
+                    })
+                  }
+                />
+              </label>
+            </div>
+          </section>
+
+          <section className="settings-field">
+            <span className="settings-field__label">Umgebungsgeraeusch</span>
+            {ambientControl}
           </section>
         </div>
       </aside>

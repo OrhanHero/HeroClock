@@ -51,3 +51,20 @@ export function greetingForHour(hour: number): string {
   }
   return 'Gute Nacht'
 }
+
+/**
+ * Formatiert eine Dauer in Sekunden als "mm:ss".
+ *
+ * Negative Werte werden auf 0 begrenzt, Minuten koennen bei langen Dauern
+ * ueber 59 hinausgehen (z. B. "90:00").
+ *
+ * @param totalSeconds Gesamtdauer in Sekunden.
+ */
+export function formatMmSs(totalSeconds: number): string {
+  const safeSeconds = Math.max(0, Math.floor(totalSeconds))
+  const minutes = Math.floor(safeSeconds / 60)
+  const seconds = safeSeconds % 60
+  const mm = String(minutes).padStart(2, '0')
+  const ss = String(seconds).padStart(2, '0')
+  return `${mm}:${ss}`
+}

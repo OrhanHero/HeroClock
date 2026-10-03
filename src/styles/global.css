@@ -381,3 +381,211 @@ button {
   background: var(--accent);
   color: var(--surface-strong);
 }
+
+/* Pomodoro-Dauern im Einstellungs-Panel */
+.settings-durations {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.settings-duration {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.settings-duration .settings-field__input {
+  padding: 0.45rem 0.5rem;
+  text-align: center;
+}
+
+/* Pomodoro-Timer */
+.pomodoro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.pomodoro__phase {
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  background: var(--surface);
+}
+
+.pomodoro__phase[data-phase='work'] {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.pomodoro__phase[data-phase='shortBreak'],
+.pomodoro__phase[data-phase='longBreak'] {
+  color: var(--accent-2);
+  border-color: var(--accent-2);
+}
+
+.pomodoro__time {
+  font-size: clamp(2.75rem, 12vw, 4.5rem);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.pomodoro__cycle {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.pomodoro__controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.pomodoro__button {
+  padding: 0.5rem 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.9rem;
+  transition: transform 0.15s ease, background-color 0.2s ease;
+}
+
+.pomodoro__button:hover {
+  transform: translateY(-1px);
+  background: var(--surface-strong);
+}
+
+.pomodoro__button--primary {
+  background: var(--accent);
+  color: var(--surface-strong);
+  border-color: transparent;
+}
+
+/* Aufgabenliste */
+.todo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  text-align: left;
+}
+
+.todo__form {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.todo__input {
+  flex: 1 1 10rem;
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface-strong);
+  padding: 0.55rem 0.9rem;
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+.todo__add {
+  padding: 0.55rem 1rem;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: var(--accent);
+  color: var(--surface-strong);
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.todo__empty {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.todo__list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.todo__item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.todo__label {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex: 1;
+  cursor: pointer;
+}
+
+.todo__checkbox {
+  width: 1.1rem;
+  height: 1.1rem;
+  accent-color: var(--accent);
+  flex-shrink: 0;
+}
+
+.todo__text {
+  color: var(--text);
+  word-break: break-word;
+}
+
+.todo__item--done .todo__text {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+
+.todo__delete {
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 1.3rem;
+  line-height: 1;
+  padding: 0 0.3rem;
+  transition: color 0.2s ease;
+}
+
+.todo__delete:hover {
+  color: var(--accent-2);
+}
+
+.todo__count {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+/* Umgebungsgeraeusch-Steuerung */
+.ambient {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.ambient__volume {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.ambient__volume input[type='range'] {
+  width: 100%;
+  accent-color: var(--accent);
+}
