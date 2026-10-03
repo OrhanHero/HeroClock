@@ -303,13 +303,18 @@ button {
 }
 
 .settings-panel {
+  display: flex;
+  flex-direction: column;
   width: min(24rem, 100%);
   height: 100%;
-  overflow-y: auto;
+  max-height: 100dvh;
+  overflow: hidden;
   background: var(--surface-strong);
   border-left: 1px solid var(--border);
   box-shadow: var(--shadow);
   padding: clamp(1.25rem, 3vw, 2rem);
+  /* Scrollen im Panel darf nicht auf den Hintergrund durchschlagen */
+  overscroll-behavior: contain;
   animation: settings-slide-in 0.25s ease;
 }
 
@@ -327,6 +332,8 @@ button {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 1.5rem;
+  /* Kopfzeile bleibt sichtbar, nur der Inhalt darunter scrollt */
+  flex: 0 0 auto;
 }
 
 .settings-panel__header h2 {
@@ -349,6 +356,14 @@ button {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  /* Bei Platzmangel scrollt nur der Inhaltsbereich (Touch auf Echo Show) */
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  /* etwas Luft, damit das letzte Feld nicht am Rand klebt */
+  padding-bottom: 0.5rem;
 }
 
 .settings-field {
