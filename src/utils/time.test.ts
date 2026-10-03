@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { formatMmSs, formatTime, greetingForHour, isNightHour } from './time'
+import {
+  formatMmSs,
+  formatSeconds,
+  formatTime,
+  greetingForHour,
+  isNightHour,
+} from './time'
 
 describe('greetingForHour', () => {
   it('liefert "Guten Morgen" am Rand von 5 bis 10 Uhr', () => {
@@ -38,6 +44,15 @@ describe('formatTime', () => {
     // Enthaelt die Stunde 1 (statt 13) und einen AM/PM-Hinweis.
     expect(result).toMatch(/1[:.]05/)
     expect(result.toLowerCase()).toMatch(/pm|nachm/)
+  })
+})
+
+describe('formatSeconds', () => {
+  it('formatiert Sekunden zweistellig mit fuehrender Null', () => {
+    expect(formatSeconds(new Date(2024, 0, 1, 13, 5, 7))).toBe('07')
+    expect(formatSeconds(new Date(2024, 0, 1, 13, 5, 0))).toBe('00')
+    expect(formatSeconds(new Date(2024, 0, 1, 13, 5, 42))).toBe('42')
+    expect(formatSeconds(new Date(2024, 0, 1, 13, 5, 59))).toBe('59')
   })
 })
 

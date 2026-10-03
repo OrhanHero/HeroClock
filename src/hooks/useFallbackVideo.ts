@@ -97,6 +97,25 @@ export function useFallbackVideo(
 
     let cancelled = false
 
+    // Erneuter Startversuch bei der ersten Nutzergeste (Autoplay-Block in Silk).
+    const retryPlay = (): void => {
+      const video = videoRef.current
+      if (!video || !video.src) {
+        return
+      }
+      void video.play().catch(() => undefined)
+    }
+
+    const gestureEvents: Array<keyof DocumentEventMap> = [
+      'pointerdown',
+      'touchstart',
+      'click',
+      'keydown',
+    ]
+    gestureEvents.forEach((type) => {
+      document.addEventListener(type, retryPlay, { passive: true })
+    })
+
     void createTinyVideoUrl().then((url) => {
       if (cancelled || !url) {
         if (url) {
@@ -113,12 +132,19 @@ export function useFallbackVideo(
       video.muted = true
       video.loop = true
       video.playsInline = true
+      video.autoplay = true
       // Wiedergabe kann ohne Nutzergeste abgelehnt werden - still ignorieren.
-      void video.play().catch(() => undefined)
+      // Der Autoplay-Block wird spaeter beim ersten Touch (retryPlay) umgangen.
+      void video.play().catch((error) => {
+        console.debug('Fallback-Video Autoplay blockiert:', error)
+      })
     })
 
     return () => {
       cancelled = true
+      gestureEvents.forEach((type) => {
+        document.removeEventListener(type, retryPlay)
+      })
       const video = videoRef.current
       if (video) {
         video.pause()

@@ -101,6 +101,15 @@ button {
   gap: 0.3rem;
 }
 
+/* Zeile aus Hauptzeit + kleinerer Sekundenanzeige, an der Grundlinie ausgerichtet */
+.hero-clock__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: clamp(0.4rem, 1.5vw, 1.2rem);
+  max-width: 100%;
+}
+
 .hero-clock__time {
   /* Querformat Echo Show 11 (1920 breit): bewusst sehr gross, damit die
    * Uhrzeit das Display fuellt. Die vw-Komponente dominiert im Landscape;
@@ -114,6 +123,17 @@ button {
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
   max-width: 100%;
+}
+
+/* Kleinere, laufende Sekundenanzeige neben der Hauptzeit. Aendert sich jede
+ * Sekunde sichtbar und sorgt so fuer kontinuierliche Aktivitaet (Anti-Standby). */
+.hero-clock__seconds {
+  font-size: clamp(2rem, 9vw, 6rem);
+  font-weight: 600;
+  line-height: 1;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 .hero-clock__date {
@@ -405,6 +425,44 @@ button {
 .app-footer {
   position: relative;
   z-index: 1;
+}
+
+/*
+ * Dauerhaft laufende, extrem dezente Aktivitaets-Animation. Ein nahezu
+ * unsichtbares 1px-Element wird endlos minimal bewegt und in der Deckkraft
+ * variiert. Das beschaeftigt Browser/Compositor kontinuierlich (gegen Standby),
+ * aehnlich der staendig umklappenden Flip-Animation bekannter Flip-Uhren.
+ * Bewusst winzig und mit will-change markiert, um CPU/GPU-Last minimal und
+ * Burn-In-Risiko praktisch null zu halten. Respektiert prefers-reduced-motion
+ * nicht, da die Bewegung gewollt und faktisch unsichtbar ist.
+ */
+.kiosk-activity-pulse {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+  background: currentColor;
+  opacity: 0.01;
+  will-change: transform, opacity;
+  animation: kiosk-activity 2s linear infinite;
+  z-index: -1;
+}
+
+@keyframes kiosk-activity {
+  0% {
+    transform: translateX(0);
+    opacity: 0.01;
+  }
+  50% {
+    transform: translateX(1px);
+    opacity: 0.02;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 0.01;
+  }
 }
 
 /* Selbst erzeugtes 1x1-Fallback-Video: faktisch unsichtbar, aber vorhanden. */

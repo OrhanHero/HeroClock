@@ -1,5 +1,4 @@
 import { useCallback, useRef } from 'react'
-import { useWakeLock } from '../hooks/useWakeLock'
 import { useFallbackVideo } from '../hooks/useFallbackVideo'
 
 /*
@@ -7,13 +6,26 @@ import { useFallbackVideo } from '../hooks/useFallbackVideo'
  * Buendelt die Optimierungen fuer den Dauerbetrieb auf Touch-Geraeten
  * (z. B. Echo Show 11 im Vollbild):
  *
- * - Haelt den Bildschirm ueber die Screen-Wake-Lock-API aktiv.
  * - Loest bei Beruehrung/Klick den nativen Vollbildmodus aus
  *   (element.requestFullscreen()), Fehler werden tolerant abgefangen.
- * - Falls die Wake-Lock-API nicht verfuegbar ist, laeuft im Hintergrund ein
- *   selbst erzeugtes, unsichtbares, stummes 1x1-Video in Dauerschleife, um
- *   Standby zu verhindern.
+ * - Haelt - solange der Anti-Standby aktiv ist - ein selbst erzeugtes,
+ *   unsichtbares, stummes 1x1-Video in Dauerschleife bereit, falls die
+ *   Wake-Lock-API nicht greift.
+ * - Rendert eine dauerhaft laufende, extrem dezente Aktivitaets-Animation
+ *   (praktisch unsichtbares 1px-Element). Sie haelt den Compositor/Browser
+ *   kontinuierlich beschaeftigt - analog zur permanent laufenden Flip-Animation
+ *   bekannter Flip-Uhren, die den Standby zuverlaessig verhindert.
+ *
+ * Der eigentliche Wake Lock wird in App gehalten (useWakeLock), damit das
+ * Einstellungs-Panel Status und manuelle Erneuerung anzeigen kann.
  */
+
+interface KioskLayerProps {
+  /** Ist der Anti-Standby grundsaetzlich aktiviert (Nutzer-Einstellung)? */
+  keepAwake: boolean
+  /** Ist der Wake Lock aktuell aktiv? Dann wird das Video-Fallback geschont. */
+  wakeLockActive: boolean
+}
 
 function requestFullscreenSafely(): void {
   const element = document.documentElement as HTMLElement & {
@@ -34,14 +46,14 @@ function requestFullscreenSafely(): void {
   }
 }
 
-function KioskLayer() {
+function KioskLayer({ keepAwake, wakeLockActive }: KioskLayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
 
-  // Wake Lock aktiv halten; liefert zurueck, ob die API unterstuetzt wird.
-  const wakeLockSupported = useWakeLock(true)
-
-  // Fallback-Video nur erzeugen, wenn die Wake-Lock-API fehlt.
-  useFallbackVideo(videoRef, !wakeLockSupported)
+  // Fallback-Video laufen lassen, solange der Anti-Standby aktiv ist, der Wake
+  // Lock aber (noch) nicht greift. So ist bereits vor dem ersten Touch Medien-
+  // Aktivitaet vorhanden; ein spaeterer Touch versucht die Wiedergabe erneut.
+  const fallbackActive = keepAwake && !wakeLockActive
+  useFallbackVideo(videoRef, fallbackActive)
 
   const handleActivate = useCallback(() => {
     requestFullscreenSafely()
@@ -62,11 +74,22 @@ function KioskLayer() {
       />
 
       {/*
-        Fallback: unsichtbares, stummes 1x1-Video in Dauerschleife. Quelle wird
-        zur Laufzeit selbst erzeugt (kein fremdes Asset). Nur aktiv, wenn die
-        Wake-Lock-API nicht unterstuetzt wird.
+        Dauerhaft laufende, extrem dezente Aktivitaets-Animation. Ein nahezu
+        unsichtbares 1px-Element wird per CSS-Animation endlos minimal bewegt,
+        um Browser/Compositor kontinuierlich zu beschaeftigen (gegen Standby).
+        Nur aktiv, wenn der Anti-Standby eingeschaltet ist. Ressourcenschonend:
+        eine einzige CSS-Transform-/Opacity-Animation, kein JS-Loop.
       */}
-      {!wakeLockSupported && (
+      {keepAwake && (
+        <span className="kiosk-activity-pulse" aria-hidden="true" />
+      )}
+
+      {/*
+        Fallback: unsichtbares, stummes 1x1-Video in Dauerschleife. Quelle wird
+        zur Laufzeit selbst erzeugt (kein fremdes Asset). Nur vorhanden, wenn der
+        Anti-Standby aktiv ist und der Wake Lock (noch) nicht greift.
+      */}
+      {fallbackActive && (
         <video
           ref={videoRef}
           className="kiosk-fallback-video"

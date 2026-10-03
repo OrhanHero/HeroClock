@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { useLocalStorage } from './hooks/useLocalStorage'
 import { useAmbientSound } from './hooks/useAmbientSound'
 import { useNightDimming } from './hooks/useNightDimming'
+import { useWakeLock } from './hooks/useWakeLock'
 import { DEFAULT_SETTINGS } from './settings'
 import type { Settings } from './settings'
 import Greeting from './components/Greeting'
@@ -37,6 +38,11 @@ function App() {
     settings.nightEndHour,
   )
 
+  // Bildschirm wach halten (Anti-Standby). Fordert den Wake Lock bereits beim
+  // Start an und erneuert ihn bei Sichtbarkeit/Vollbild. Der Status und die
+  // manuelle Erneuerung (per Nutzergeste) werden im Einstellungs-Panel genutzt.
+  const wakeLock = useWakeLock(settings.keepAwake)
+
   const updateSettings = useCallback(
     (patch: Partial<Settings>) => {
       setStoredSettings((previous) => ({
@@ -55,7 +61,10 @@ function App() {
         aktiv (Wake Lock + Video-Fallback) und loest bei Beruehrung den Vollbild-
         modus aus.
       */}
-      <KioskLayer />
+      <KioskLayer
+        keepAwake={settings.keepAwake}
+        wakeLockActive={wakeLock.status === 'active'}
+      />
 
       <header className="app-topbar">
         <button
@@ -73,7 +82,7 @@ function App() {
 
       <main className="app-main">
         <Greeting name={settings.name} />
-        <HeroClock use24h={settings.use24h} />
+        <HeroClock use24h={settings.use24h} showSeconds={settings.showSeconds} />
       </main>
 
       <footer className="app-footer">
@@ -89,6 +98,8 @@ function App() {
         settings={settings}
         onChange={updateSettings}
         onClose={() => setIsSettingsOpen(false)}
+        wakeLockStatus={wakeLock.status}
+        onKeepAwakeRequest={wakeLock.requestNow}
         ambientControl={
           <AmbientSound
             enabled={settings.ambientEnabled}

@@ -25,6 +25,16 @@ export interface Settings {
   name: string
   /** true = 24-Stunden-Format, false = 12-Stunden-Format. */
   use24h: boolean
+  /**
+   * Sekunden sichtbar anzeigen? Sorgt zugleich fuer eine sichtbare Aenderung
+   * pro Sekunde (Aktivitaet gegen den Standby, wie bei Flip-Uhren).
+   */
+  showSeconds: boolean
+  /**
+   * Bildschirm wach halten (Anti-Standby)? Aktiviert Wake Lock + Fallback-Video
+   * und die dauerhaft laufende, dezente Aktivitaets-Animation.
+   */
+  keepAwake: boolean
   /** Aktuell gewaehltes Theme. */
   theme: ThemeId
   /** Dauer einer Fokus-Phase in Minuten. */
@@ -51,6 +61,8 @@ export interface Settings {
 export const DEFAULT_SETTINGS: Settings = {
   name: '',
   use24h: true,
+  showSeconds: true,
+  keepAwake: true,
   theme: DEFAULT_THEME,
   pomodoroWorkMinutes: 25,
   pomodoroShortBreakMinutes: 5,

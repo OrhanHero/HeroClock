@@ -1,16 +1,23 @@
 import { useEffect, useState } from 'react'
-import { formatDate, formatTime } from '../utils/time'
+import { formatDate, formatSeconds, formatTime } from '../utils/time'
 
 interface HeroClockProps {
   /** true fuer 24-Stunden-Format, false fuer 12-Stunden-Format. */
   use24h: boolean
+  /**
+   * Sekunden sichtbar als eigenes, kleineres Element anzeigen. Dadurch aendert
+   * sich jede Sekunde sichtbar etwas - analog zu Flip-Uhren, deren staendige
+   * Bewegung den Browser aktiv haelt und den Standby verzoegert.
+   */
+  showSeconds: boolean
 }
 
 /**
  * Grosse, prominente Uhr. Aktualisiert sich jede Sekunde ueber ein Intervall,
- * das beim Entfernen der Komponente wieder aufgeraeumt wird.
+ * das beim Entfernen der Komponente wieder aufgeraeumt wird. Die optionale
+ * Sekundenanzeige sorgt fuer eine permanent sichtbare Aenderung pro Sekunde.
  */
-function HeroClock({ use24h }: HeroClockProps) {
+function HeroClock({ use24h, showSeconds }: HeroClockProps) {
   const [now, setNow] = useState<Date>(() => new Date())
 
   useEffect(() => {
@@ -25,9 +32,16 @@ function HeroClock({ use24h }: HeroClockProps) {
 
   return (
     <section className="hero-clock" aria-label="Aktuelle Uhrzeit">
-      <time className="hero-clock__time" dateTime={now.toISOString()}>
-        {formatTime(now, use24h)}
-      </time>
+      <div className="hero-clock__row">
+        <time className="hero-clock__time" dateTime={now.toISOString()}>
+          {formatTime(now, use24h)}
+        </time>
+        {showSeconds && (
+          <span className="hero-clock__seconds" aria-label="Sekunden">
+            {formatSeconds(now)}
+          </span>
+        )}
+      </div>
       <p className="hero-clock__date">{formatDate(now)}</p>
     </section>
   )

@@ -19,6 +19,19 @@ export function formatTime(date: Date, use24h: boolean): string {
 }
 
 /**
+ * Formatiert die Sekunden einer Uhrzeit zweistellig, z. B. "07" oder "42".
+ *
+ * Wird als eigenes, kleineres Element neben der Hauptzeit angezeigt, damit sich
+ * jede Sekunde sichtbar etwas aendert (kontinuierliche Aktivitaet wie bei
+ * Flip-Uhren, die den Browser/Compositor beschaeftigt haelt).
+ *
+ * @param date Zeitpunkt, dessen Sekunden formatiert werden sollen.
+ */
+export function formatSeconds(date: Date): string {
+  return String(date.getSeconds()).padStart(2, '0')
+}
+
+/**
  * Formatiert das Datum als langes deutsches Datum, z. B. "Montag, 3. Oktober".
  */
 export function formatDate(date: Date): string {
