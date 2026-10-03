@@ -191,34 +191,32 @@ button {
 
 /* Einstellungs-Panel (einschiebbares Overlay) */
 .settings-overlay {
+  /* Reiner, abdunkelnder Klick-/Touch-Hintergrund. Schliesst beim Klick.
+   * Das Panel selbst ist unabhaengig davon fixed positioniert (siehe unten),
+   * daher braucht das Overlay hier KEIN Flex-Layout mehr. */
   position: fixed;
   inset: 0;
-  /* Volle Viewport-Hoehe explizit erzwingen (Silk/Echo Show loest 100% am
-   * fixed-Overlay nicht immer zuverlaessig auf). vh zuerst als Fallback,
-   * dvh danach fuer Browser mit dynamischen Leisten. */
-  width: 100vw;
-  height: 100vh;
-  height: 100dvh;
-  display: flex;
-  /* Panel rechtsbuendig am Rand verankern und auf volle Hoehe strecken */
-  justify-content: flex-end;
-  align-items: stretch;
   background: rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(2px);
   z-index: 50;
 }
 
 .settings-panel {
+  /* Panel hart am rechten Rand festnageln: top+bottom spannen die volle
+   * Viewport-Hoehe auf, OHNE auf height:100%/vh/dvh oder eine
+   * Flex-Hoehenaufloesung angewiesen zu sein. Das war der Grund, warum Silk
+   * (Echo Show) das Panel bisher auf Inhaltshoehe kollabierte und mittig bzw.
+   * zuletzt rechts-unten als kompakte Box zeigte. */
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(24rem, 100vw);
   display: flex;
   flex-direction: column;
-  width: min(24rem, 100%);
-  /* Volle Viewport-Hoehe statt height:100% (Silk kollabierte das Panel sonst
-   * auf Inhaltshoehe und zeigte es mittig schwebend). */
-  height: 100vh;
-  height: 100dvh;
-  max-height: 100vh;
-  max-height: 100dvh;
   overflow: hidden;
+  /* Ueber dem abdunkelnden Overlay-Hintergrund liegen und klickbar bleiben. */
+  z-index: 51;
   background: var(--surface-strong);
   border-left: 1px solid var(--border);
   box-shadow: var(--shadow);
@@ -387,11 +385,16 @@ button {
   outline: none;
 }
 
-/* Interaktive Inhalte ueber den Klick-Layer heben, damit sie klickbar bleiben. */
+/* Interaktive Inhalte ueber den Klick-Layer heben, damit sie klickbar bleiben.
+ * WICHTIG: .settings-overlay bewusst NICHT hier auffuehren. Diese Regel setzt
+ * position:relative und wuerde (gleiche Spezifitaet, spaeter im Stylesheet)
+ * das position:fixed des Overlays ueberschreiben. Dadurch landete das Panel
+ * frueher im normalen Fluss unten statt als volle, fixe Seitenleiste.
+ * Overlay (z-index:50) und Panel (z-index:51) liegen ohnehin ueber dem
+ * Klick-Layer (z-index:0). */
 .app-topbar,
 .app-main,
-.app-footer,
-.settings-overlay {
+.app-footer {
   position: relative;
   z-index: 1;
 }
