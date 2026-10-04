@@ -4,18 +4,13 @@ import { formatDate, formatSeconds, formatTime } from '../utils/time'
 interface HeroClockProps {
   /** true fuer 24-Stunden-Format, false fuer 12-Stunden-Format. */
   use24h: boolean
-  /**
-   * Sekunden sichtbar als eigenes, kleineres Element anzeigen. Dadurch aendert
-   * sich jede Sekunde sichtbar etwas - analog zu Flip-Uhren, deren staendige
-   * Bewegung den Browser aktiv haelt und den Standby verzoegert.
-   */
+  /** Sekunden sichtbar als eigenes, kleineres Element anzeigen. */
   showSeconds: boolean
 }
 
 /**
  * Grosse, prominente Uhr. Aktualisiert sich jede Sekunde ueber ein Intervall,
- * das beim Entfernen der Komponente wieder aufgeraeumt wird. Die optionale
- * Sekundenanzeige sorgt fuer eine permanent sichtbare Aenderung pro Sekunde.
+ * das beim Entfernen der Komponente wieder aufgeraeumt wird.
  */
 function HeroClock({ use24h, showSeconds }: HeroClockProps) {
   const [now, setNow] = useState<Date>(() => new Date())

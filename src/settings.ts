@@ -30,11 +30,6 @@ export interface Settings {
    * pro Sekunde (Aktivitaet gegen den Standby, wie bei Flip-Uhren).
    */
   showSeconds: boolean
-  /**
-   * Bildschirm wach halten (Anti-Standby)? Aktiviert Wake Lock + Fallback-Video
-   * und die dauerhaft laufende, dezente Aktivitaets-Animation.
-   */
-  keepAwake: boolean
   /** Aktuell gewaehltes Theme. */
   theme: ThemeId
   /** Dauer einer Fokus-Phase in Minuten. */
@@ -43,10 +38,6 @@ export interface Settings {
   pomodoroShortBreakMinutes: number
   /** Dauer einer langen Pause in Minuten. */
   pomodoroLongBreakMinutes: number
-  /** Umgebungsgeraeusch aktiviert? */
-  ambientEnabled: boolean
-  /** Lautstaerke des Umgebungsgeraeuschs (0 bis 1). */
-  ambientVolume: number
   /**
    * Nachtmodus/Dimming aktiviert? Schont im Dauerbetrieb das Panel (Burn-In)
    * durch tiefes Schwarz (#000000) und gedaempfte Inhalte im Nachtfenster.
@@ -62,13 +53,10 @@ export const DEFAULT_SETTINGS: Settings = {
   name: '',
   use24h: true,
   showSeconds: true,
-  keepAwake: true,
   theme: DEFAULT_THEME,
   pomodoroWorkMinutes: 25,
   pomodoroShortBreakMinutes: 5,
   pomodoroLongBreakMinutes: 15,
-  ambientEnabled: false,
-  ambientVolume: 0.4,
   nightDimming: true,
   nightStartHour: 22,
   nightEndHour: 7,

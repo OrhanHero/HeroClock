@@ -125,8 +125,7 @@ button {
   max-width: 100%;
 }
 
-/* Kleinere, laufende Sekundenanzeige neben der Hauptzeit. Aendert sich jede
- * Sekunde sichtbar und sorgt so fuer kontinuierliche Aktivitaet (Anti-Standby). */
+/* Kleinere, laufende Sekundenanzeige neben der Hauptzeit. */
 .hero-clock__seconds {
   font-size: clamp(2rem, 9vw, 6rem);
   font-weight: 600;
@@ -372,24 +371,6 @@ button {
   text-align: center;
 }
 
-/* Umgebungsgeraeusch-Steuerung */
-.ambient {
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-}
-
-.ambient__volume {
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-}
-
-.ambient__volume input[type='range'] {
-  width: 100%;
-  accent-color: var(--accent);
-}
-
 /*
  * Kiosk-/Dauerbetrieb-Hilfen (Echo Show 11 im Vollbild).
  */
@@ -425,57 +406,6 @@ button {
 .app-footer {
   position: relative;
   z-index: 1;
-}
-
-/*
- * Dauerhaft laufende, extrem dezente Aktivitaets-Animation. Ein nahezu
- * unsichtbares 1px-Element wird endlos minimal bewegt und in der Deckkraft
- * variiert. Das beschaeftigt Browser/Compositor kontinuierlich (gegen Standby),
- * aehnlich der staendig umklappenden Flip-Animation bekannter Flip-Uhren.
- * Bewusst winzig und mit will-change markiert, um CPU/GPU-Last minimal und
- * Burn-In-Risiko praktisch null zu halten. Respektiert prefers-reduced-motion
- * nicht, da die Bewegung gewollt und faktisch unsichtbar ist.
- */
-.kiosk-activity-pulse {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 1px;
-  height: 1px;
-  pointer-events: none;
-  background: currentColor;
-  opacity: 0.01;
-  will-change: transform, opacity;
-  animation: kiosk-activity 2s linear infinite;
-  z-index: -1;
-}
-
-@keyframes kiosk-activity {
-  0% {
-    transform: translateX(0);
-    opacity: 0.01;
-  }
-  50% {
-    transform: translateX(1px);
-    opacity: 0.02;
-  }
-  100% {
-    transform: translateX(0);
-    opacity: 0.01;
-  }
-}
-
-/* Selbst erzeugtes 1x1-Fallback-Video: faktisch unsichtbar, aber vorhanden. */
-.kiosk-fallback-video {
-  position: fixed;
-  bottom: 0;
-  right: 0;
-  width: 1px;
-  height: 1px;
-  opacity: 0;
-  pointer-events: none;
-  border: 0;
-  z-index: -1;
 }
 
 /*

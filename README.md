@@ -5,10 +5,14 @@ Touch-Displays. Die App zeigt eine grosse Uhr mit Datum und einer persoenlichen
 Begruessung in einer aufgeraeumten, zentrierten Oberflaeche und ist auf den
 Kiosk-/Vollbildbetrieb (z. B. auf einem Amazon Echo Show) ausgelegt.
 
-Die gesamte Gestaltung, Farbwelt, Texte und Klaenge sind originaer. HeroClock
-ist ein eigenstaendiges Projekt und steht in keinerlei Verbindung zu einem
-anderen Produkt. Es werden keine fremden Marken, Designs, Inhalte oder Dateien
-verwendet. Klaenge entstehen ausschliesslich zur Laufzeit per WebAudio.
+Die gesamte Gestaltung, Farbwelt und Texte sind originaer. HeroClock ist ein
+eigenstaendiges Projekt und steht in keinerlei Verbindung zu einem anderen
+Produkt. Es werden keine fremden Marken, Designs, Inhalte oder Dateien
+verwendet.
+
+## Repository
+
+Der Quellcode liegt auf GitHub: [OrhanHero/HeroClock](https://github.com/OrhanHero/HeroClock)
 
 ## Funktionen
 
@@ -17,32 +21,22 @@ verwendet. Klaenge entstehen ausschliesslich zur Laufzeit per WebAudio.
 - **Persoenliche Begruessung** je nach Tageszeit (Morgen, Tag, Abend, Nacht),
   optional mit dem hinterlegten Namen.
 - **Drei eigenstaendige Themes** (siehe unten), lokal gespeichert.
-- **Umgebungsgeraeusch** als sanftes, kontinuierlich per WebAudio erzeugtes
-  Rauschen mit Lautstaerke-Regler. Es werden keine externen Audiodateien
-  geladen; der Klang entsteht vollstaendig im Browser.
 - **Dauerbetrieb/Kiosk-Modus** fuer Touch-Displays (z. B. Amazon Echo Show 11,
   1920x1200):
   - Viewportfuellende, zentrierte Darstellung ohne Scrollbalken.
-  - Haelt den Bildschirm aktiv ueber die Screen-Wake-Lock-API und fordert die
-    Sperre nach einem Standby automatisch neu an. Fehlt die API (z. B.
-    blockiert), spielt im Hintergrund ein selbst erzeugtes, unsichtbares,
-    stummes 1x1-Video in Dauerschleife, um den Standby zu verhindern.
   - Eine Beruehrung der Flaeche aktiviert den nativen Vollbildmodus.
   - Nachtmodus/Dimming mit tiefem Schwarz (`#000000`) als Burn-In-Schutz,
     zeitgesteuert ueber ein konfigurierbares Nachtfenster.
   - Das Einstellungs-Panel ist bei Platzmangel intern scrollbar (Touch).
-- **Einstellungen** fuer Name, Uhrzeit-Format (24h/12h), Theme,
-  Umgebungsgeraeusch (an/aus + Lautstaerke) und Nachtmodus (an/aus +
-  Start-/Endstunde) - alle Werte werden unter dem `localStorage`-Schluessel
-  `heroclock:settings` gesichert.
+- **Einstellungen** fuer Name, Uhrzeit-Format (24h/12h), Sekundenanzeige, Theme
+  und Nachtmodus (an/aus + Start-/Endstunde) - alle Werte werden unter dem
+  `localStorage`-Schluessel `heroclock:settings` gesichert.
 
 ## Technik
 
 - Vite + React 18 + TypeScript (strict mode)
 - Theming ueber CSS-Variablen und ein `data-theme`-Attribut
 - Persistenz ueber einen typisierten `useLocalStorage`-Hook (Praefix `heroclock:`)
-- Klaenge ausschliesslich ueber die WebAudio-API (gefiltertes Rauschen), ohne
-  externe Assets
 - Unit-Tests mit Vitest decken die reinen Zeit-Hilfsfunktionen ab
 
 ## Entwicklung

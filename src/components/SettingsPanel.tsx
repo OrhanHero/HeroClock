@@ -1,7 +1,5 @@
 import { useEffect, useRef } from 'react'
-import type { ReactNode } from 'react'
 import type { Settings, ThemeId } from '../settings'
-import type { WakeLockStatus } from '../hooks/useWakeLock'
 import ThemeSwitcher from './ThemeSwitcher'
 
 interface SettingsPanelProps {
@@ -13,36 +11,15 @@ interface SettingsPanelProps {
   onChange: (patch: Partial<Settings>) => void
   /** Schliessen des Panels. */
   onClose: () => void
-  /** Grober Status des Wake Lock (Anti-Standby) fuer die Anzeige. */
-  wakeLockStatus: WakeLockStatus
-  /**
-   * Fordert den Wake Lock sofort an. Wird aus einer Nutzergeste (Schalter)
-   * aufgerufen, da Wake Lock i. d. R. eine Interaktion verlangt.
-   */
-  onKeepAwakeRequest: () => void
-  /** Steuerelemente fuer das Umgebungsgeraeusch (bleibt in App gemountet). */
-  ambientControl?: ReactNode
-}
-
-/** Liefert eine kurze, deutsche Statusbeschreibung fuer den Anti-Standby. */
-function wakeLockStatusText(status: WakeLockStatus): string {
-  switch (status) {
-    case 'active':
-      return 'aktiv'
-    case 'unsupported':
-      return 'nicht unterstuetzt (Video-Fallback aktiv)'
-    default:
-      return 'bereit (nach erster Beruehrung aktiv)'
-  }
 }
 
 /**
  * Einschiebbares Einstellungs-Panel.
  *
- * Enthaelt Name, Uhrzeit-Format und Theme-Auswahl. Das Panel ist bewusst so
- * aufgebaut, dass spaetere Features (z. B. Umgebungsgeraeusche oder
- * Pomodoro-Optionen) weitere Abschnitte ergaenzen koennen, indem sie das
- * Settings-Objekt erweitern und hier zusaetzliche Steuerelemente einfuegen.
+ * Enthaelt Name, Uhrzeit-Format, Sekundenanzeige, Theme-Auswahl und den
+ * Nachtmodus. Das Panel ist bewusst so aufgebaut, dass spaetere Features
+ * weitere Abschnitte ergaenzen koennen, indem sie das Settings-Objekt
+ * erweitern und hier zusaetzliche Steuerelemente einfuegen.
  */
 /** Begrenzt eine Stunden-Eingabe auf 0-23. */
 function clampHour(raw: string): number {
@@ -58,9 +35,6 @@ function SettingsPanel({
   settings,
   onChange,
   onClose,
-  wakeLockStatus,
-  onKeepAwakeRequest,
-  ambientControl,
 }: SettingsPanelProps) {
   const panelRef = useRef<HTMLDivElement>(null)
 
@@ -171,56 +145,8 @@ function SettingsPanel({
               </button>
             </div>
             <p className="settings-field__hint">
-              Zeigt die laufenden Sekunden an. Die staendige Bewegung haelt das
-              Display aktiv und beugt dem Standby vor.
+              Zeigt die laufenden Sekunden neben der Uhrzeit an.
             </p>
-          </section>
-
-          <section className="settings-field">
-            <span className="settings-field__label">Bildschirm wach halten</span>
-            <div
-              className="settings-segmented"
-              role="group"
-              aria-label="Bildschirm wach halten waehlen"
-            >
-              <button
-                type="button"
-                aria-pressed={settings.keepAwake}
-                onClick={() => {
-                  onChange({ keepAwake: true })
-                  // Direkt aus der Nutzergeste anfordern - Wake Lock braucht
-                  // i. d. R. eine Interaktion, um zuverlaessig zu greifen.
-                  onKeepAwakeRequest()
-                }}
-              >
-                An
-              </button>
-              <button
-                type="button"
-                aria-pressed={!settings.keepAwake}
-                onClick={() => onChange({ keepAwake: false })}
-              >
-                Aus
-              </button>
-            </div>
-            <p className="settings-field__hint">
-              Verhindert den Standby (z. B. auf dem Echo Show) ueber Wake Lock,
-              ein Video-Fallback und eine dezente Dauer-Animation.
-            </p>
-            {settings.keepAwake && (
-              <>
-                <p className="settings-field__hint">
-                  Status: {wakeLockStatusText(wakeLockStatus)}
-                </p>
-                <button
-                  type="button"
-                  className="settings-field__input"
-                  onClick={onKeepAwakeRequest}
-                >
-                  Wachhaltung jetzt aktivieren/erneuern
-                </button>
-              </>
-            )}
           </section>
 
           <section className="settings-field">
@@ -229,11 +155,6 @@ function SettingsPanel({
               theme={settings.theme}
               onChange={(theme: ThemeId) => onChange({ theme })}
             />
-          </section>
-
-          <section className="settings-field">
-            <span className="settings-field__label">Umgebungsgeraeusch</span>
-            {ambientControl}
           </section>
 
           <section className="settings-field">
