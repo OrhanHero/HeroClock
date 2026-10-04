@@ -72,7 +72,16 @@ function App() {
       </main>
 
       <footer className="app-footer">
-        <p>HeroClock &middot; dein ruhiger Ort zum Fokussieren</p>
+        <p>
+          {/* Sichtbarer Footer-Text verlinkt auf das GitHub-Repository. */}
+          <a
+            href="https://github.com/OrhanHero/HeroClock"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            HeroClock &middot; dein ruhiger Ort zum Fokussieren
+          </a>
+        </p>
       </footer>
 
       <SettingsPanel
